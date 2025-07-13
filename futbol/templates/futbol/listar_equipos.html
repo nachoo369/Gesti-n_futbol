@@ -1,0 +1,57 @@
+{% extends 'futbol/base.html' %}
+{% load static %} {# ¡Asegúrate de cargar esto si usas un placeholder! #}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-6"> {# Aumentamos el max-w para acomodar las acciones #}
+    <h1 class="text-3xl font-semibold mb-6 text-center text-gray-800">Equipos</h1>
+
+    {# Cambiamos a una tabla para una mejor gestión de las columnas y acciones #}
+    <table class="min-w-full bg-white rounded shadow overflow-hidden">
+        <thead class="bg-gray-100 border-b">
+            <tr>
+                <th class="text-left py-3 px-4 font-medium text-gray-700">Escudo</th>
+                <th class="text-left py-3 px-4 font-medium text-gray-700">Nombre</th>
+                <th class="text-left py-3 px-4 font-medium text-gray-700">Entrenador</th>
+                <th class="text-left py-3 px-4 font-medium text-gray-700">País</th>
+                <th class="text-left py-3 px-4 font-medium text-gray-700">Acciones</th> {# Columna para Editar/Eliminar #}
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipo in equipos %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="py-2 px-4">
+                    {% if equipo.escudo %} {# <-- INICIO DE LA CONDICIÓN #}
+                        <img src="{{ equipo.escudo.url }}" alt="{{ equipo.nombre }}" class="w-16 h-16 object-contain border" />
+                    {% else %}
+                        {# OPCIONAL: Un placeholder si no hay escudo. Crea esta imagen en futbol/static/futbol/default_team.png #}
+                        <img src="{% static 'futbol/default_team.png' %}" alt="Sin Escudo" class="w-16 h-16 object-contain border border-gray-300 bg-gray-200 flex items-center justify-center text-gray-500">
+                        {# Si no quieres un placeholder de imagen, puedes poner un texto o un icono por defecto: #}
+                        {# <span class="text-gray-500">N/A</span> #}
+                    {% endif %} {# <-- FIN DE LA CONDICIÓN #}
+                </td>
+                <td class="py-2 px-4 text-gray-900 font-semibold">{{ equipo.nombre }}</td>
+                <td class="py-2 px-4 text-gray-700">{{ equipo.entrenador }}</td>
+                <td class="py-2 px-4 text-gray-700">{{ equipo.pais.nombre }}</td>
+                <td class="py-2 px-4 flex space-x-2">
+                    <a href="{% url 'editar_equipo' equipo.id %}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-sm">
+                        Editar
+                    </a>
+                    <a href="{% url 'eliminar_equipo' equipo.id %}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar a este equipo?');">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="py-4 text-center text-gray-500">No hay equipos registrados.</td></tr> {# colspan ajustado a 5 #}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# Botón para agregar nuevo equipo #}
+    <div class="mt-6 text-center">
+        <a href="{% url 'crear_equipo' %}" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+            Agregar Nuevo Equipo
+        </a>
+    </div>
+</div>
+{% endblock %}

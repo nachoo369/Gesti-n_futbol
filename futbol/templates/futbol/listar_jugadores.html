@@ -1,0 +1,65 @@
+{% extends 'futbol/base.html' %}
+{% load static %} {# ¡Asegúrate de cargar los archivos estáticos si vas a usar un placeholder! #}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-6">
+  <h1 class="text-3xl font-semibold mb-6 text-center text-gray-800">Jugadores</h1>
+
+  <table class="min-w-full bg-white rounded shadow overflow-hidden">
+    <thead class="bg-gray-100 border-b">
+      <tr>
+        <th class="text-left py-3 px-4 font-medium text-gray-700">Foto</th>
+        <th class="text-left py-3 px-4 font-medium text-gray-700">Nombre</th>
+        <th class="text-left py-3 px-4 font-medium text-gray-700">Edad</th>
+        <th class="text-left py-3 px-4 font-medium text-gray-700">Posición</th>
+        <th class="text-left py-3 px-4 font-medium text-gray-700">Equipo</th>
+        <th class="text-left py-3 px-4 font-medium text-gray-700">Acciones</th> {# Añadimos una columna para acciones #}
+      </tr>
+    </thead>
+    <tbody>
+      {% for jugador in jugadores %}
+      <tr class="border-b hover:bg-gray-50">
+        <td class="py-2 px-4">
+          {% if jugador.foto %} {# <-- INICIO DE LA CONDICIÓN #}
+              <img src="{{ jugador.foto.url }}" alt="{{ jugador.nombre }}" class="w-16 h-16 object-cover rounded-full border" />
+          {% else %}
+              {# OPCIONAL: Un placeholder si no hay foto. Crea esta imagen en futbol/static/futbol/default_player.png #}
+              <img src="{% static 'futbol/default_player.png' %}" alt="Sin Foto" class="w-16 h-16 object-cover rounded-full border border-gray-300 bg-gray-200 flex items-center justify-center text-gray-500">
+              {# Si no quieres un placeholder de imagen, puedes poner un texto o un icono por defecto: #}
+              {# <span class="text-gray-500">N/A</span> #}
+          {% endif %} {# <-- FIN DE LA CONDICIÓN #}
+        </td>
+        <td class="py-2 px-4 text-gray-900 font-semibold">{{ jugador.nombre }}</td>
+        <td class="py-2 px-4 text-gray-700">{{ jugador.edad }}</td>
+        <td class="py-2 px-4 text-gray-700">{{ jugador.posicion }}</td>
+        <td class="py-2 px-4 text-gray-700">
+            {% if jugador.equipo %}
+                {{ jugador.equipo.nombre }}
+            {% else %}
+                <span class="text-gray-500">Sin equipo</span>
+            {% endif %}
+        </td>
+        {# Añadimos los botones de acción para editar y eliminar #}
+        <td class="py-2 px-4 flex space-x-2">
+            <a href="{% url 'editar_jugador' jugador.id %}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-sm">
+                Editar
+            </a>
+            <a href="{% url 'eliminar_jugador' jugador.id %}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar a este jugador?');">
+                Eliminar
+            </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="py-4 text-center text-gray-500">No hay jugadores registrados.</td></tr> {# colspan ajustado a 6 #}
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {# Botón para agregar nuevo jugador #}
+  <div class="mt-6 text-center">
+    <a href="{% url 'crear_jugador' %}" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+      Agregar Nuevo Jugador
+    </a>
+  </div>
+</div>
+{% endblock %}
